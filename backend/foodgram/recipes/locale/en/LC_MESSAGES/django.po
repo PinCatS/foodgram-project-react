@@ -1,0 +1,94 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-09-24 13:09+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: users/apps.py:8
+msgid "users"
+msgstr "users"
+
+#: recipes/apps.py:8 recipes/models.py:58
+msgid "recipes"
+msgstr "recipes"
+
+#: recipes/models.py:10
+msgid "slug"
+msgstr "slug"
+
+#: recipes/models.py:11 recipes/models.py:25 recipes/models.py:34
+msgid "name"
+msgstr "name"
+
+#: recipes/models.py:13
+msgid "color"
+msgstr "color"
+
+#: recipes/models.py:16
+msgid "Color in RGB #RRGGBB format"
+msgstr "Color in RGB #RRGGBB format"
+
+#: recipes/models.py:20
+msgid "tag"
+msgstr "tag"
+
+#: recipes/models.py:21
+msgid "tags"
+msgstr "tags"
+
+#: recipes/models.py:26
+msgid "measurement unit"
+msgstr "measurement unit"
+
+#: recipes/models.py:29
+msgid "ingredient"
+msgstr "ingredient"
+
+#: recipes/models.py:30
+msgid "ingredients"
+msgstr "ingredients"
+
+#: recipes/models.py:35
+msgid "text"
+msgstr "text"
+
+#: recipes/models.py:36
+msgid "favorited"
+msgstr "favorited"
+
+#: recipes/models.py:38
+msgid "in shopping cart"
+msgstr "in shopping cart"
+
+#: recipes/models.py:40
+msgid "image"
+msgstr "image"
+
+#: recipes/models.py:42
+msgid "cooking time"
+msgstr "cooking time"
+
+#: recipes/models.py:46
+msgid "author"
+msgstr "author"
+
+#: recipes/models.py:57
+msgid "recipe"
+msgstr "recipe"
+
+#: recipes/models.py:75
+msgid "amount"
+msgstr "amount"
