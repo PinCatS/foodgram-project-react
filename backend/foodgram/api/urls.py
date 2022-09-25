@@ -4,13 +4,18 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework.routers import SimpleRouter
 
-from .views import ReadOnlyTagViewSet
+from .views import IngredientReadOnlyViewSet, TagReadOnlyViewSet
 
 app_name = 'api'
 
 router_v1 = SimpleRouter()
 
-router_v1.register('tags', ReadOnlyTagViewSet, basename='tag')
+router_v1.register('tags', TagReadOnlyViewSet, basename='tag')
+router_v1.register(
+    'ingredients',
+    IngredientReadOnlyViewSet,
+    basename='ingredient',
+)
 
 urlpatterns = [
     path('', include(router_v1.urls), name='api'),
