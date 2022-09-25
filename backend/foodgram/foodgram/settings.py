@@ -1,14 +1,22 @@
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = (
-    "django-insecure-h6)nh_el*5xi!(z#q^od!@d%7ioux5cyp5+7_%(o%=$b(8*ff+"
+load_dotenv()
+
+SECRET_KEY = os.getenv(
+    'DJANGO_SECRET_KEY',
+    default='django-insecure-h6)nh_el*5xi!(z#q^od!@d%7ioux5cyp5+7_%(o%=$b(8*ff+',
 )
 
-DEBUG = True
+DEBUG = os.getenv('DJANGO_DEBUG', default='false').lower() == 'true'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', default='').split()
+
+INTERNAL_IPS = os.getenv('DJANGO_INTERNAL_IPS', default='').split()
 
 
 # Application definition
@@ -20,8 +28,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'debug_toolbar',
+    'drf_yasg',
+    'django_filters',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'djoser',
     'users.apps.UsersConfig',
     'recipes.apps.RecipesConfig',
+    'api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [
@@ -32,6 +47,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = "foodgram.urls"
@@ -83,6 +99,21 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}
+
+DJOSER = {
+    'SERIALIZERS': {
+        'user': 'users.serializers.CustomUserSerializer',
+        'current_user': 'users.serializers.CustomUserSerializer',
+    },
+}
 
 # Internationalization
 
@@ -106,3 +137,12 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Custom user
 AUTH_USER_MODEL = 'users.User'
+
+# Path to data for importdata manage.py command
+TEST_DATA_DIR = os.path.join(BASE_DIR, '..', '..', 'data')
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'api_key': {'type': 'apiKey', 'in': 'header', 'name': 'Authorization'}
+    },
+}

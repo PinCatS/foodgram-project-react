@@ -12,7 +12,7 @@ class Tag(models.Model):
     color = models.CharField(
         _('color'),
         max_length=7,
-        default='#000000',
+        unique=True,
         help_text=_('Color in RGB #RRGGBB format'),
     )
 
@@ -22,12 +22,18 @@ class Tag(models.Model):
 
 
 class Ingredient(models.Model):
-    name = models.CharField(_('name'), max_length=256, unique=True)
+    name = models.CharField(_('name'), max_length=256)
     measurement_unit = models.CharField(_('measurement unit'), max_length=256)
 
     class Meta:
         verbose_name = _('ingredient')
         verbose_name_plural = _('ingredients')
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'measurement_unit'],
+                name='unique_ingredient',
+            )
+        ]
 
 
 class Recipe(models.Model):
