@@ -43,7 +43,12 @@ class Recipe(models.Model):
     is_in_shopping_cart = models.BooleanField(
         _('in shopping cart'), default=False
     )
-    image = models.ImageField(_('image'), upload_to='recipes/images/')
+    image = models.ImageField(
+        _('image'),
+        upload_to='recipes/images/',
+        null=True,
+        default=None,
+    )
     cooking_time = models.PositiveSmallIntegerField(
         _('cooking time'), validators=[MinValueValidator(1)]
     )
@@ -53,10 +58,13 @@ class Recipe(models.Model):
         on_delete=models.CASCADE,
         related_name='recipes',
     )
-    tags = models.ManyToManyField(Tag, through='TagRecipe')
+    tags = models.ManyToManyField(
+        Tag, through='TagRecipe', related_name='recipes'
+    )
     ingredients = models.ManyToManyField(
         Ingredient,
         through='IngredientRecipe',
+        related_name='recipes',
     )
 
     class Meta:
@@ -75,8 +83,14 @@ class TagRecipe(models.Model):
 
 
 class IngredientRecipe(models.Model):
-    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(
+        Ingredient,
+        on_delete=models.CASCADE,
+        related_name='ingredient_recipes',
+    )
+    recipe = models.ForeignKey(
+        Recipe, on_delete=models.CASCADE, related_name='ingredient_recipes'
+    )
     amount = models.PositiveSmallIntegerField(
         _('amount'),
         validators=[MinValueValidator(1)],
