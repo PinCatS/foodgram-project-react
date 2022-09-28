@@ -36,6 +36,10 @@ class Ingredient(models.Model):
         ]
 
 
+def user_directory_path(instance, filename):
+    return f'recipes/images/user_{instance.author.id}/{filename}'
+
+
 class Recipe(models.Model):
     name = models.CharField(_('name'), max_length=200)
     text = models.TextField(_('text'))
@@ -43,12 +47,7 @@ class Recipe(models.Model):
     is_in_shopping_cart = models.BooleanField(
         _('in shopping cart'), default=False
     )
-    image = models.ImageField(
-        _('image'),
-        upload_to='recipes/images/',
-        null=True,
-        default=None,
-    )
+    image = models.ImageField(_('image'), upload_to=user_directory_path)
     cooking_time = models.PositiveSmallIntegerField(
         _('cooking time'), validators=[MinValueValidator(1)]
     )

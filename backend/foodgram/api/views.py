@@ -23,7 +23,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
 
     def get_serializer_class(self):
-        if self.action in ('create', 'partial_update'):
+        if self.action in ('create', 'update', 'partial_update'):
             return RecipeSerializer
         return ReadOnlyRecipeSerializer
 

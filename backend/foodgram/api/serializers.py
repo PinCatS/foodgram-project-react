@@ -68,7 +68,7 @@ class ReadOnlyRecipeSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    image = Base64ImageField(required=False, allow_null=True)
+    image = Base64ImageField()
     # Should be { "id": 1123, "amount": 10 }
     ingredients = IngredientAmountSerializer(
         many=True, source='ingredient_recipes'
@@ -109,3 +109,37 @@ class RecipeSerializer(serializers.ModelSerializer):
                 )
 
         return recipe
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.text = validated_data.get('text', instance.text)
+        instance.cooking_time = validated_data.get(
+            'cooking_time', instance.cooking_time
+        )
+        instance.image = validated_data.get('image', instance.image)
+        if 'tags' in validated_data:
+            tags_data = validated_data.pop('tags')
+            lst = [tag.id for tag in tags_data]
+            instance.tags.set(lst)
+        with transaction.atomic():
+            IngredientRecipe.objects.filter(recipe=instance.id).delete()
+            if 'ingredient_recipes' in validated_data:
+                ingredient_recipes_data = validated_data.pop(
+                    'ingredient_recipes'
+                )
+                lst = []
+                for ingredient_recipe in ingredient_recipes_data:
+                    amount = ingredient_recipe['amount']
+                    current_ingredient = Ingredient.objects.get(
+                        pk=ingredient_recipe['ingredient']['id']
+                    )
+                    IngredientRecipe.objects.create(
+                        ingredient=current_ingredient,
+                        recipe=instance,
+                        amount=amount,
+                    )
+                    lst.append(ingredient_recipe['ingredient']['id'])
+                instance.ingredients.set(lst)
+
+            instance.save()
+        return instance

@@ -134,3 +134,4 @@ dmypy.json
 # local
 .DS_Store
 .vscode
+media/
