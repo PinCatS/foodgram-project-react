@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 
+from .paginator import DynamicLimitPaginator
 from .serializers import (
     IngredientSerializer,
     ReadOnlyRecipeSerializer,
@@ -21,6 +22,7 @@ class IngredientReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
+    pagination_class = DynamicLimitPaginator
 
     def get_serializer_class(self):
         if self.action in ('create', 'update', 'partial_update'):

@@ -24,8 +24,7 @@ router_v1.register(
 
 urlpatterns = [
     path('', include(router_v1.urls), name='api'),
-    path('', include('djoser.urls')),
-    path('auth/', include('djoser.urls.authtoken')),
+    path('', include('users.urls')),
 ]
 
 schema_view = get_schema_view(

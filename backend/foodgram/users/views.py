@@ -1,3 +1,7 @@
-from django.shortcuts import render
+from djoser.views import UserViewSet
 
-# Create your views here.
+from api.paginator import DynamicLimitPaginator
+
+
+class CustomUserViewSet(UserViewSet):
+    pagination_class = DynamicLimitPaginator
