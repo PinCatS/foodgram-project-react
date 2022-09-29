@@ -2,7 +2,7 @@ from distutils.util import strtobool
 
 import django_filters
 
-from recipes.models import Recipe
+from recipes.models import Recipe, Tag
 
 
 class RecipeFilter(django_filters.FilterSet):
@@ -18,7 +18,11 @@ class RecipeFilter(django_filters.FilterSet):
         choices=BOOLEAN_CHOICES, coerce=strtobool
     )
     author = django_filters.NumberFilter(field_name='author__id')
-    tags = django_filters.CharFilter(field_name='tags__slug')
+    tags = django_filters.ModelMultipleChoiceFilter(
+        field_name='tags__slug',
+        to_field_name='slug',
+        queryset=Tag.objects.all(),
+    )
 
     class Meta:
         model = Recipe
