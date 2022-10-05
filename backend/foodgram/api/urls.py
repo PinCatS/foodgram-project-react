@@ -16,6 +16,7 @@ router_v1.register(
     IngredientReadOnlyViewSet,
     basename='ingredient',
 )
+
 router_v1.register(
     'recipes',
     RecipeViewSet,

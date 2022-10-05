@@ -1,11 +1,14 @@
 import base64
 
+from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.db import transaction
 from rest_framework import serializers
 
 from recipes.models import Ingredient, IngredientRecipe, Recipe, Tag, TagRecipe
 from users.serializers import CustomUserSerializer
+
+User = get_user_model()
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -51,6 +54,9 @@ class ReadOnlyRecipeSerializer(serializers.ModelSerializer):
     )
     tags = TagSerializer(many=True, read_only=True)
 
+    is_favorited = serializers.SerializerMethodField()
+    is_in_shopping_cart = serializers.SerializerMethodField()
+
     class Meta:
         model = Recipe
         fields = (
@@ -65,6 +71,14 @@ class ReadOnlyRecipeSerializer(serializers.ModelSerializer):
             'tags',
             'ingredients',
         )
+
+    def get_is_favorited(self, obj):
+        user = self.context['request'].user
+        return user.favorite_recipes.filter(recipe=obj.id).exists()
+
+    def is_in_shopping_cart(self, obj):
+        user = self.context['request'].user
+        return user.cart_recipes.filter(recipe=obj.id).exists()
 
 
 class RecipeSerializer(serializers.ModelSerializer):
@@ -143,3 +157,34 @@ class RecipeSerializer(serializers.ModelSerializer):
 
             instance.save()
         return instance
+
+
+class FavoriteSerializer(serializers.ModelSerializer):
+    is_subscribed = serializers.SerializerMethodField()
+    recipes_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = (
+            'email',
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'is_subscribed',
+            'recipes_count',
+        )
+        read_only_fields = (
+            'email',
+            'username',
+            'first_name',
+            'last_name',
+            'is_subscribed',
+        )
+
+    def get_is_subscribed(self, obj):
+        user = self.context['request'].user
+        return obj.subscribers.filter(pk=user.id).exists()
+
+    def get_recipes_count(self, obj):
+        return 0

@@ -13,8 +13,30 @@ class User(AbstractUser):
         'password',
     )
 
-    first_name = models.CharField(_("first name"), max_length=150)
-    last_name = models.CharField(_("last name"), max_length=150)
-    email = models.EmailField(_("email address"), max_length=150)
+    first_name = models.CharField(_('first name'), max_length=150)
+    last_name = models.CharField(_('last name'), max_length=150)
+    email = models.EmailField(_('email address'), max_length=150)
 
-    is_subscribed = models.BooleanField(default=False)
+
+class Subscribe(models.Model):
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='subscribed_by',
+        verbose_name=_('author'),
+    )
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='subscribers',
+        verbose_name=_('subscribers'),
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['author', 'user'],
+                name='unique_subscription',
+            )
+        ]

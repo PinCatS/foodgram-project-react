@@ -102,3 +102,25 @@ class IngredientRecipe(models.Model):
                 name='unique_ingredient_recipe',
             )
         ]
+
+
+class FavoriteRecipe(models.Model):
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='favorited_by',
+        verbose_name=_('favorited_by'),
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='favorite_recipes',
+        verbose_name=_('favorite'),
+    )
+
+
+class InCartRecipe(models.Model):
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='cart_recipes'
+    )

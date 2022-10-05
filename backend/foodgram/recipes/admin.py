@@ -31,14 +31,9 @@ class RecipeAdmin(admin.ModelAdmin):
     )
     list_display = (
         'name',
-        'text',
-        'is_favorited',
-        'is_in_shopping_cart',
-        'image',
         'author',
-        'cooking_time',
     )
 
-    list_filter = ('is_favorited', 'is_in_shopping_cart')
+    list_filter = ('tags__slug',)
 
-    search_fields = ('name', 'author', 'id')
+    search_fields = ('name', 'author', 'tags__slug', 'tags__name', 'id')
