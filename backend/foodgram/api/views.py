@@ -41,7 +41,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
     filterset_class = RecipeFilter
     pagination_class = DynamicLimitPaginator
-    ordering_fields = ('created', 'modified', 'name')
 
     def get_serializer_class(self):
         if self.action in ('create', 'update', 'partial_update'):

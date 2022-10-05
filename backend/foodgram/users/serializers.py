@@ -6,7 +6,7 @@ from recipes.serializers import SimpleRecipeSerializer
 
 
 class CustomUserSerializer(UserSerializer):
-    is_subscribed = serializers.SerializerMethodField()
+    is_subscribed = serializers.BooleanField()
 
     class Meta:
         model = User
@@ -18,10 +18,6 @@ class CustomUserSerializer(UserSerializer):
             'last_name',
             'is_subscribed',
         )
-
-    def get_is_subscribed(self, obj):
-        user = self.context['request'].user
-        return obj.subscribed_by.filter(pk=user.id).exists()
 
 
 class SubscribeSerializer(UserSerializer):
