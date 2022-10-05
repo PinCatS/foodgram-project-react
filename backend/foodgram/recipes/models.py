@@ -3,10 +3,12 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from .mixins import TimeStampedMixin
+
 User = get_user_model()
 
 
-class Tag(models.Model):
+class Tag(TimeStampedMixin):
     slug = models.SlugField(_('slug'), max_length=64, unique=True)
     name = models.CharField(_('name'), max_length=64, unique=True)
     color = models.CharField(
@@ -17,11 +19,12 @@ class Tag(models.Model):
     )
 
     class Meta:
+        ordering = ('slug', '-created')
         verbose_name = _('tag')
         verbose_name_plural = _('tags')
 
 
-class Ingredient(models.Model):
+class Ingredient(TimeStampedMixin):
     name = models.CharField(_('name'), max_length=256)
     measurement_unit = models.CharField(_('measurement unit'), max_length=256)
 
@@ -40,7 +43,7 @@ def user_directory_path(instance, filename):
     return f'recipes/images/user_{instance.author.id}/{filename}'
 
 
-class Recipe(models.Model):
+class Recipe(TimeStampedMixin):
     name = models.CharField(_('name'), max_length=200)
     text = models.TextField(_('text'))
     is_favorited = models.BooleanField(_('favorited'), default=False)
@@ -67,6 +70,7 @@ class Recipe(models.Model):
     )
 
     class Meta:
+        ordering = ('-created', 'name')
         verbose_name = _('recipe')
         verbose_name_plural = _('recipes')
         constraints = [
@@ -79,6 +83,10 @@ class Recipe(models.Model):
 class TagRecipe(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    created = models.DateTimeField(_('created'), auto_now_add=True)
+
+    class Meta:
+        ordering = ('-created',)
 
 
 class IngredientRecipe(models.Model):
@@ -94,8 +102,10 @@ class IngredientRecipe(models.Model):
         _('amount'),
         validators=[MinValueValidator(1)],
     )
+    created = models.DateTimeField(_('created'), auto_now_add=True)
 
     class Meta:
+        ordering = ('-created',)
         constraints = [
             models.UniqueConstraint(
                 fields=['ingredient', 'recipe', 'amount'],
@@ -117,6 +127,10 @@ class FavoriteRecipe(models.Model):
         related_name='favorite_recipes',
         verbose_name=_('favorite'),
     )
+    created = models.DateTimeField(_('created'), auto_now_add=True)
+
+    class Meta:
+        ordering = ('-created',)
 
 
 class InCartRecipe(models.Model):
@@ -124,3 +138,7 @@ class InCartRecipe(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='cart_recipes'
     )
+    created = models.DateTimeField(_('created'), auto_now_add=True)
+
+    class Meta:
+        ordering = ('-created',)

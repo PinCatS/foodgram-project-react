@@ -5,7 +5,7 @@ from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from .filters import RecipeFilter
+from .filters import IngredientSearchFilter, RecipeFilter
 from .paginator import DynamicLimitPaginator
 from .serializers import (
     IngredientSerializer,
@@ -33,15 +33,15 @@ class TagReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
 class IngredientReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('^name',)
+    filter_backends = (IngredientSearchFilter,)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    filter_backends = (DjangoFilterBackend,)
+    filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
     filterset_class = RecipeFilter
     pagination_class = DynamicLimitPaginator
+    ordering_fields = ('created', 'modified', 'name')
 
     def get_serializer_class(self):
         if self.action in ('create', 'update', 'partial_update'):

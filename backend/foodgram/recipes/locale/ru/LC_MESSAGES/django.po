@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-24 13:09+0000\n"
+"POT-Creation-Date: 2022-10-05 07:38+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,78 +19,116 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
+
 #: users/apps.py:8
 msgid "users"
 msgstr "пользователи"
 
-#: recipes/apps.py:8 recipes/models.py:58
-msgid "recipes"
-msgstr "рецепты"
+#: users/models.py:16
+msgid "first name"
+msgstr "имя"
 
-#: recipes/models.py:10
-msgid "slug"
-msgstr "слаг"
+#: users/models.py:17
+msgid "last name"
+msgstr "фамилия"
 
-#: recipes/models.py:11 recipes/models.py:25 recipes/models.py:34
-msgid "name"
-msgstr "наименование"
+#: users/models.py:18
+msgid "email address"
+msgstr "email"
 
-#: recipes/models.py:13
-msgid "color"
-msgstr "цвет"
-
-#: recipes/models.py:16
-msgid "Color in RGB #RRGGBB format"
-msgstr "Цвет в RGB #RRGGBB формате"
-
-#: recipes/models.py:20
-msgid "tag"
-msgstr "тэг"
-
-#: recipes/models.py:21
-msgid "tags"
-msgstr "тэги"
-
-#: recipes/models.py:26
-msgid "measurement unit"
-msgstr "единица измерения"
-
-#: recipes/models.py:29
-msgid "ingredient"
-msgstr "ингредиент"
-
-#: recipes/models.py:30
-msgid "ingredients"
-msgstr "ингредиенты"
-
-#: recipes/models.py:35
-msgid "text"
-msgstr "текст"
-
-#: recipes/models.py:36
-msgid "favorited"
-msgstr "избранное"
-
-#: recipes/models.py:38
-msgid "in shopping cart"
-msgstr "в корзине покупок"
-
-#: recipes/models.py:40
-msgid "image"
-msgstr "изображение"
-
-#: recipes/models.py:42
-msgid "cooking time"
-msgstr "время приготовления"
-
-#: recipes/models.py:46
+#: users/models.py:26 recipes/models.py:58
 msgid "author"
 msgstr "автор"
 
-#: recipes/models.py:57
+#: users/models.py:33
+msgid "subscribers"
+msgstr "подписчики"
+
+#: recipes/apps.py:8 recipes/models.py:73
+msgid "recipes"
+msgstr "рецепты"
+
+#: recipes/mixins.py:6 recipes/models.py:84 recipes/models.py:100
+#: recipes/models.py:124 recipes/models.py:132
+msgid "created"
+msgstr "создано"
+
+#: recipes/mixins.py:7
+msgid "modified"
+msgstr "изменено"
+
+#: recipes/models.py:12
+msgid "slug"
+msgstr "слаг"
+
+#: recipes/models.py:13 recipes/models.py:27 recipes/models.py:46
+msgid "name"
+msgstr "наименование"
+
+#: recipes/models.py:15
+msgid "color"
+msgstr "цвет"
+
+#: recipes/models.py:18
+msgid "Color in RGB #RRGGBB format"
+msgstr "Цвет в RGB #RRGGBB формате"
+
+#: recipes/models.py:22
+msgid "tag"
+msgstr "тэг"
+
+#: recipes/models.py:23
+msgid "tags"
+msgstr "тэги"
+
+#: recipes/models.py:28
+msgid "measurement unit"
+msgstr "единица измерения"
+
+#: recipes/models.py:31
+msgid "ingredient"
+msgstr "ингредиент"
+
+#: recipes/models.py:32
+msgid "ingredients"
+msgstr "ингредиенты"
+
+#: recipes/models.py:47
+msgid "text"
+msgstr "текст"
+
+#: recipes/models.py:48
+msgid "favorited"
+msgstr "избранное"
+
+#: recipes/models.py:50
+msgid "in shopping cart"
+msgstr "в корзине покупок"
+
+#: recipes/models.py:52
+msgid "image"
+msgstr "изображение"
+
+#: recipes/models.py:54
+msgid "cooking time"
+msgstr "время приготовления"
+
+#: recipes/models.py:72
 msgid "recipe"
 msgstr "рецепт"
 
-#: recipes/models.py:75
+#: recipes/models.py:97
 msgid "amount"
 msgstr "количество"
+
+#: recipes/models.py:116
+#, fuzzy
+#| msgid "favorited"
+msgid "favorited_by"
+msgstr "избранное"
+
+#: recipes/models.py:122
+#, fuzzy
+#| msgid "favorited"
+msgid "favorite"
+msgstr "избранное"
