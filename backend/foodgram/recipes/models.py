@@ -46,10 +46,6 @@ def user_directory_path(instance, filename):
 class Recipe(TimeStampedMixin):
     name = models.CharField(_('name'), max_length=200)
     text = models.TextField(_('text'))
-    is_favorited = models.BooleanField(_('favorited'), default=False)
-    is_in_shopping_cart = models.BooleanField(
-        _('in shopping cart'), default=False
-    )
     image = models.ImageField(_('image'), upload_to=user_directory_path)
     cooking_time = models.PositiveSmallIntegerField(
         _('cooking time'), validators=[MinValueValidator(1)]
