@@ -24,6 +24,3 @@ class CustomUserAdmin(UserAdmin):
         'is_active',
     )
     search_fields = ('username', 'email', 'first_name', 'last_name')
-
-
-# admin.site.register(User, UserAdmin)

@@ -101,7 +101,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         return PDFTemplateResponse(
             request=request,
-            template='template.html',
+            template='shopping_cart_template.html',
             filename='shopping_cart.pdf',
             context=context,
             show_content_in_browser=False,

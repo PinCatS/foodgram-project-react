@@ -6,11 +6,13 @@
 </head>
 <body>
     <h1>Продукты для покупки</h1>
-    <h3>Рецепты:</h3>
-    {% for recipe in recipes %}
-        {{ recipe }}
-    {% endfor %}
-    <h3>Продукты:</h3>
+    <h2>Рецепты в корзине:</h2>
+    <ul>
+        {% for recipe in recipes %}
+            <li>{{ recipe }}</li>
+        {% endfor %}
+    </ul>
+    <h2>Список продуктов для покупки:</h2>
     <ul>
         {% for ingredient in ingredients %}
             <li>{{ ingredient.name }}: {{ ingredient.amount }} {{ ingredient.measurement_unit }}</li>

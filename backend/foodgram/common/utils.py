@@ -29,6 +29,17 @@ def unfollow(request, id, target_field: str, through_model):
 
 
 def build_ingredients_summary(recipes_ingredients):
+    """
+    Collect ingredients from all recipes and calculate total amount for each.
+
+    While collecting the same ingredients, (name, measurement_unit) is used
+    as a key because the same ingredient for different recipe can have
+    different measurement unit and we can't add them. The algorithm simply
+    distinguish such ingredients. It doesn't try to convert different units
+    because we don't know all possible units.
+
+    Return list of ingredients.
+    """
     summary = defaultdict(int)
     for ingredients in recipes_ingredients:
         for ingredient in ingredients:

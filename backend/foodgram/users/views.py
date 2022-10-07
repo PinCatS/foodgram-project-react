@@ -44,19 +44,7 @@ class CustomUserViewSet(UserViewSet):
     )
     def subscribe(self, request, id=None):
         return follow(self, request, id, User, 'author', Subscribe)
-        # author = get_object_or_404(User, pk=id)
-        # Subscribe.objects.create(
-        #     author=author,
-        #     user=request.user,
-        # )
-        # serializer = self.get_serializer(author)
-        # return Response(serializer.data)
 
     @subscribe.mapping.delete
     def unsubscribe(self, request, id=None):
         return unfollow(request, id, 'author', Subscribe)
-        # subscription = get_object_or_404(
-        #     Subscribe, author__id=id, user=request.user
-        # )
-        # subscription.delete()
-        # return Response(status=status.HTTP_204_NO_CONTENT)

@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.db import transaction
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 
 from recipes.models import Ingredient, IngredientRecipe, Recipe, Tag, TagRecipe
 from users.serializers import CustomUserSerializer
@@ -49,9 +50,9 @@ class IngredientAmountSerializer(serializers.ModelSerializer):
 class Base64ImageField(serializers.ImageField):
     def to_internal_value(self, data):
         if isinstance(data, str) and data.startswith('data:image'):
-            format, imgstr = data.split(';base64,')
-            ext = format.split('/')[-1]
-            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
+            image_format, img_str = data.split(';base64,')
+            ext = image_format.split('/')[-1]
+            data = ContentFile(base64.b64decode(img_str), name='temp.' + ext)
 
         return super().to_internal_value(data)
 
@@ -81,18 +82,9 @@ class ReadOnlyRecipeSerializer(serializers.ModelSerializer):
             'ingredients',
         )
 
-    # def get_is_favorited(self, obj):
-    #     user = self.context['request'].user
-    #     return user.favorite_recipes.filter(recipe=obj).exists()
-
-    # def get_is_in_shopping_cart(self, obj):
-    #     user = self.context['request'].user
-    #     return user.cart_recipes.filter(recipe=obj).exists()
-
 
 class RecipeSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
-    # Should be { "id": 1123, "amount": 10 }
     ingredients = IngredientAmountSerializer(
         many=True, source='ingredient_recipes'
     )
@@ -113,6 +105,13 @@ class RecipeSerializer(serializers.ModelSerializer):
             'ingredients',
         )
         read_only_fields = ('author',)
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Recipe.objects.all(),
+                fields=('name', 'author'),
+                message='Такой рецепт у вас уже существует',
+            )
+        ]
 
     def create(self, validated_data):
         tags = validated_data.pop('tags')
@@ -166,34 +165,3 @@ class RecipeSerializer(serializers.ModelSerializer):
 
             instance.save()
         return instance
-
-
-class FavoriteSerializer(serializers.ModelSerializer):
-    is_subscribed = serializers.SerializerMethodField()
-    recipes_count = serializers.SerializerMethodField()
-
-    class Meta:
-        model = User
-        fields = (
-            'email',
-            'id',
-            'username',
-            'first_name',
-            'last_name',
-            'is_subscribed',
-            'recipes_count',
-        )
-        read_only_fields = (
-            'email',
-            'username',
-            'first_name',
-            'last_name',
-            'is_subscribed',
-        )
-
-    def get_is_subscribed(self, obj):
-        user = self.context['request'].user
-        return obj.subscriptions.filter(pk=user.id).exists()
-
-    def get_recipes_count(self, obj):
-        return 0
