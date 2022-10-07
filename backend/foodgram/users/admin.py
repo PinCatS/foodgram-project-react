@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from .models import Subscribe, User
+from recipes.models import InCartRecipe
 
 
 class SubscribeInline(admin.TabularInline):
@@ -9,9 +10,16 @@ class SubscribeInline(admin.TabularInline):
     fk_name = 'user'
 
 
+class InCartRecipeInline(admin.TabularInline):
+    model = InCartRecipe
+
+
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
-    inlines = (SubscribeInline,)
+    inlines = (
+        SubscribeInline,
+        InCartRecipeInline,
+    )
     list_display = (
         'username',
         'email',

@@ -5,7 +5,6 @@ from django.utils.translation import gettext_lazy as _
 
 from .models import (
     FavoriteRecipe,
-    InCartRecipe,
     Ingredient,
     IngredientRecipe,
     Recipe,
@@ -24,10 +23,6 @@ class IngredientRecipeInline(admin.TabularInline):
 
 class FavoriteRecipeInline(admin.TabularInline):
     model = FavoriteRecipe
-
-
-class InCartRecipeInline(admin.TabularInline):
-    model = InCartRecipe
 
 
 class TagForm(ModelForm):
@@ -58,7 +53,6 @@ class RecipeAdmin(admin.ModelAdmin):
         TagRecipeInline,
         IngredientRecipeInline,
         FavoriteRecipeInline,
-        InCartRecipeInline,
     )
     list_display = (
         'name',
@@ -70,4 +64,4 @@ class RecipeAdmin(admin.ModelAdmin):
 
     @admin.display(description=_('times marked as favorite'))
     def favorites(self, obj):
-        return obj.favorited_by.all().count()
+        return obj.favorited_by.count()

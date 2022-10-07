@@ -92,9 +92,13 @@ class IngredientRecipe(models.Model):
         Ingredient,
         on_delete=models.CASCADE,
         related_name='ingredient_recipes',
+        verbose_name=_('ingredient'),
     )
     recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, related_name='ingredient_recipes'
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='ingredient_recipes',
+        verbose_name=_('recipe'),
     )
     amount = models.PositiveSmallIntegerField(
         _('amount'),
@@ -142,9 +146,16 @@ class FavoriteRecipe(models.Model):
 
 
 class InCartRecipe(models.Model):
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        verbose_name=_('recipe'),
+    )
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='cart_recipes'
+        User,
+        on_delete=models.CASCADE,
+        related_name='cart_recipes',
+        verbose_name=_('user'),
     )
     created = models.DateTimeField(_('created'), auto_now_add=True)
 

@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.db import transaction
 from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator
 
 from recipes.models import Ingredient, IngredientRecipe, Recipe, Tag, TagRecipe
 from users.serializers import CustomUserSerializer
@@ -105,13 +104,6 @@ class RecipeSerializer(serializers.ModelSerializer):
             'ingredients',
         )
         read_only_fields = ('author',)
-        validators = [
-            UniqueTogetherValidator(
-                queryset=Recipe.objects.all(),
-                fields=('name', 'author'),
-                message='Такой рецепт у вас уже существует',
-            )
-        ]
 
     def create(self, validated_data):
         tags = validated_data.pop('tags')

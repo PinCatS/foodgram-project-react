@@ -1,9 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Exists, OuterRef, Value
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, viewsets
+from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
 from wkhtmltopdf.views import PDFTemplateResponse
 
 from .filters import IngredientSearchFilter, RecipeFilter
@@ -80,11 +81,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
-    @action(detail=True)
+    @action(detail=False, permission_classes=[OwnerOrAdmin])
     def download_shopping_cart(self, request):
         user = request.user
 
         recipes, ingredients = [], []
+
+        if user.cart_recipes.count() == 0:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
         for recipe_cart in user.cart_recipes.all():
             serializer = ReadOnlyIngredientAmountSerializer(
                 recipe_cart.recipe.ingredient_recipes,
