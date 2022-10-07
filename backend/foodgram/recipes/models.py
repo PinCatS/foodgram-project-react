@@ -83,8 +83,8 @@ class TagRecipe(models.Model):
 
     class Meta:
         ordering = ('-created',)
-        verbose_name = _('recipe\'s tag')
-        verbose_name_plural = _('recipe\'s tags')
+        verbose_name = _("recipe\'s tag")
+        verbose_name_plural = _("recipe\'s tags")
 
 
 class IngredientRecipe(models.Model):
@@ -108,8 +108,8 @@ class IngredientRecipe(models.Model):
 
     class Meta:
         ordering = ('-created',)
-        verbose_name = _('recipe\'s ingredient')
-        verbose_name_plural = _('recipe\'s ingredients')
+        verbose_name = _("recipe\'s ingredient")
+        verbose_name_plural = _("recipe\'s ingredients")
         constraints = [
             models.UniqueConstraint(
                 fields=['ingredient', 'recipe', 'amount'],

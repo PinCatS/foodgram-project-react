@@ -6,9 +6,9 @@ from rest_framework.response import Response
 
 
 def follow(
-    viewset, request, id, target_model, target_field: str, through_model
+    viewset, request, pk, target_model, target_field: str, through_model
 ):
-    target = get_object_or_404(target_model, pk=id)
+    target = get_object_or_404(target_model, pk=pk)
     record = {
         target_field: target,
         'user': request.user,
@@ -18,9 +18,9 @@ def follow(
     return Response(serializer.data)
 
 
-def unfollow(request, id, target_field: str, through_model):
+def unfollow(request, pk, target_field: str, through_model):
     record = {
-        target_field + '__id': id,
+        target_field + '__id': pk,
         'user': request.user,
     }
     subscription = get_object_or_404(through_model, **record)
