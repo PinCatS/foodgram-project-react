@@ -1,16 +1,17 @@
 from collections import defaultdict
 
 from django.contrib.auth import get_user_model
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, OuterRef, Value
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from wkhtmltopdf.views import PDFTemplateResponse
 
 from .filters import IngredientSearchFilter, RecipeFilter
-from .paginator import DynamicLimitPaginator
+from .permissions import OwnerOrAdmin
 from .serializers import (
     IngredientSerializer,
     ReadOnlyIngredientAmountSerializer,
@@ -33,28 +34,41 @@ User = get_user_model()
 class TagReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    permission_classes = [IsAdminUser]
 
 
 class IngredientReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     filter_backends = (IngredientSearchFilter,)
+    permission_classes = [IsAdminUser]
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
+    permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
     filterset_class = RecipeFilter
-    pagination_class = DynamicLimitPaginator
+
+    def get_permissions(self):
+        if self.action in ('update', 'partial_update', 'destroy'):
+            self.permission_classes = [OwnerOrAdmin]
+        return super().get_permissions()
 
     def get_queryset(self):
         user = self.request.user
-        favorites = user.favorite_recipes.filter(recipe__id=OuterRef('id'))
-        in_cart_recipes = user.cart_recipes.filter(recipe__id=OuterRef('id'))
+        favorited, in_shopping_cart = Value(False), Value(False)
+        if not user.is_anonymous:
+            favorites = user.favorite_recipes.filter(recipe__id=OuterRef('id'))
+            in_cart_recipes = user.cart_recipes.filter(
+                recipe__id=OuterRef('id')
+            )
+            favorited = Exists(favorites)
+            in_shopping_cart = Exists(in_cart_recipes)
         return (
             Recipe.objects.all()
-            .annotate(is_favorited=Exists(favorites))
-            .annotate(is_in_shopping_cart=Exists(in_cart_recipes))
+            .annotate(is_favorited=favorited)
+            .annotate(is_in_shopping_cart=in_shopping_cart)
         )
 
     def get_serializer_class(self):

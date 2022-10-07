@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from djoser.conf import settings
 from djoser.views import UserViewSet
 from rest_framework import status
 from rest_framework.decorators import action
@@ -12,6 +13,16 @@ from api.paginator import DynamicLimitPaginator
 class CustomUserViewSet(UserViewSet):
     pagination_class = DynamicLimitPaginator
     serializer_class = CustomUserSerializer
+
+    def get_permissions(self):
+        if self.action == 'me':
+            self.permission_classes = settings.PERMISSIONS.current_user
+        if self.action == 'subscriptions':
+            self.permission_classes = settings.PERMISSIONS.subscriptions
+        if self.action == 'subscribe':
+            self.permission_classes = settings.PERMISSIONS.subscribe
+
+        return super().get_permissions()
 
     @action(
         detail=False,

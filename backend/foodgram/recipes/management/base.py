@@ -79,7 +79,10 @@ class ImportDataBaseCommand(BaseCommand):
                         )
                         self.stdout.write(self.style.SUCCESS(msg))
                     try:
-                        model.objects.get(pk=record.get('id'))
+                        if record.get('id'):
+                            model.objects.get(pk=record.get('id'))
+                        else:
+                            model.objects.get(**record)
                     except model.DoesNotExist:
                         model.objects.create(**record)
                     records_imported_count += 1
