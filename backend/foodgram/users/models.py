@@ -22,14 +22,14 @@ class Subscribe(models.Model):
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='subscribed_by',
+        related_name='subscribers',
         verbose_name=_('author'),
     )
 
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='subscribers',
+        related_name='subscriptions',
         verbose_name=_('subscribers'),
     )
 

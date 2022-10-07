@@ -193,7 +193,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         user = self.context['request'].user
-        return obj.subscribers.filter(pk=user.id).exists()
+        return obj.subscriptions.filter(pk=user.id).exists()
 
     def get_recipes_count(self, obj):
         return 0

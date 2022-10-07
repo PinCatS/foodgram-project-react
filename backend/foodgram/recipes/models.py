@@ -1,9 +1,8 @@
+from common.mixins import TimeStampedMixin
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
-from .mixins import TimeStampedMixin
 
 User = get_user_model()
 
@@ -127,6 +126,12 @@ class FavoriteRecipe(models.Model):
 
     class Meta:
         ordering = ('-created',)
+        constraints = [
+            models.UniqueConstraint(
+                fields=['recipe', 'user'],
+                name='unique_favorite',
+            )
+        ]
 
 
 class InCartRecipe(models.Model):
@@ -138,3 +143,9 @@ class InCartRecipe(models.Model):
 
     class Meta:
         ordering = ('-created',)
+        constraints = [
+            models.UniqueConstraint(
+                fields=['recipe', 'user'],
+                name='unique_recipe_in_cart',
+            )
+        ]

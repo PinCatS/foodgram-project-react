@@ -1,13 +1,12 @@
-from django.shortcuts import get_object_or_404
 from djoser.conf import settings
 from djoser.views import UserViewSet
-from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .models import Subscribe, User
 from .serializers import CustomUserSerializer, SubscribeSerializer
-from api.paginator import DynamicLimitPaginator
+from common.paginators import DynamicLimitPaginator
+from common.utils import follow, unfollow
 
 
 class CustomUserViewSet(UserViewSet):
@@ -31,7 +30,7 @@ class CustomUserViewSet(UserViewSet):
     )
     def subscriptions(self, request):
         user = request.user
-        subscriptions = user.subscribers.all()
+        subscriptions = user.subscriptions.all()
         authors = [subscription.author for subscription in subscriptions]
         page = self.paginate_queryset(authors)
         if page is not None:
@@ -40,20 +39,24 @@ class CustomUserViewSet(UserViewSet):
         serializer = self.get_serializer(authors, many=True)
         return Response(serializer.data)
 
-    @action(detail=True, methods=['post'], serializer_class=None)
+    @action(
+        detail=True, methods=['post'], serializer_class=SubscribeSerializer
+    )
     def subscribe(self, request, id=None):
-        author = get_object_or_404(User, pk=id)
-        Subscribe.objects.create(
-            author=author,
-            user=request.user,
-        )
-        serializer = SubscribeSerializer(author)
-        return Response(serializer.data)
+        return follow(self, request, id, User, 'author', Subscribe)
+        # author = get_object_or_404(User, pk=id)
+        # Subscribe.objects.create(
+        #     author=author,
+        #     user=request.user,
+        # )
+        # serializer = self.get_serializer(author)
+        # return Response(serializer.data)
 
     @subscribe.mapping.delete
     def unsubscribe(self, request, id=None):
-        subscription = get_object_or_404(
-            Subscribe, author__id=id, user=request.user
-        )
-        subscription.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return unfollow(request, id, 'author', Subscribe)
+        # subscription = get_object_or_404(
+        #     Subscribe, author__id=id, user=request.user
+        # )
+        # subscription.delete()
+        # return Response(status=status.HTTP_204_NO_CONTENT)

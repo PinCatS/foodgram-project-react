@@ -1,13 +1,9 @@
-from collections import defaultdict
-
 from django.contrib.auth import get_user_model
 from django.db.models import Exists, OuterRef, Value
-from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, status, viewsets
+from rest_framework import filters, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
-from rest_framework.response import Response
 from wkhtmltopdf.views import PDFTemplateResponse
 
 from .filters import IngredientSearchFilter, RecipeFilter
@@ -19,6 +15,9 @@ from .serializers import (
     RecipeSerializer,
     TagSerializer,
 )
+from common.paginators import DynamicLimitPaginator
+from common.serializers import SimpleRecipeSerializer
+from common.utils import build_ingredients_summary, follow, unfollow
 from recipes.models import (
     FavoriteRecipe,
     InCartRecipe,
@@ -26,7 +25,6 @@ from recipes.models import (
     Recipe,
     Tag,
 )
-from recipes.serializers import SimpleRecipeSerializer
 
 User = get_user_model()
 
@@ -49,6 +47,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
     filterset_class = RecipeFilter
+    pagination_class = DynamicLimitPaginator
 
     def get_permissions(self):
         if self.action in ('update', 'partial_update', 'destroy'):
@@ -81,35 +80,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
-    @action(detail=True, methods=['post'])
-    def favorite(self, request, pk=None):
-        recipe = get_object_or_404(Recipe, pk=pk)
-        FavoriteRecipe.objects.create(
-            recipe=recipe,
-            user=request.user,
-        )
-        serializer = SimpleRecipeSerializer(recipe)
-        return Response(serializer.data)
-
-    @favorite.mapping.delete
-    def unfavorite(self, request, pk=None):
-        favorite = get_object_or_404(
-            FavoriteRecipe, recipe__id=pk, user=request.user
-        )
-        favorite.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    @action(
-        detail=False,
-        serializer_class=None,
-        filter_backends=None,
-        pagination_class=None,
-    )
+    @action(detail=True)
     def download_shopping_cart(self, request):
         user = request.user
 
-        recipes = []
-        result = []
+        recipes, ingredients = [], []
         for recipe_cart in user.cart_recipes.all():
             serializer = ReadOnlyIngredientAmountSerializer(
                 recipe_cart.recipe.ingredient_recipes,
@@ -117,55 +92,36 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 read_only=True,
             )
             recipes.append(recipe_cart.recipe.name)
+            ingredients.append(serializer.data)
 
-            summary = defaultdict(int)
-            for ingredient in serializer.data:
-                summary[
-                    (ingredient['name'], ingredient['measurement_unit'])
-                ] += ingredient['amount']
-
-            for ingredient, amount in summary.items():
-                name, measurement_unit = ingredient
-                result.append(
-                    {
-                        'name': name,
-                        'amount': amount,
-                        'measurement_unit': measurement_unit,
-                    }
-                )
-
-        template = 'template.html'
         context = {
             'recipes': recipes,
-            'ingredients': result,
+            'ingredients': build_ingredients_summary(ingredients),
         }
 
-        response = PDFTemplateResponse(
+        return PDFTemplateResponse(
             request=request,
-            template=template,
-            filename="shopping_cart.pdf",
+            template='template.html',
+            filename='shopping_cart.pdf',
             context=context,
             show_content_in_browser=False,
             cmd_options={
-                'margin-top': 50,
+                'margin-top': 16,
             },
         )
-        return response
 
     @action(detail=True, methods=['post'])
     def shopping_cart(self, request, pk=None):
-        recipe = get_object_or_404(Recipe, pk=pk)
-        InCartRecipe.objects.create(
-            recipe=recipe,
-            user=request.user,
-        )
-        serializer = SimpleRecipeSerializer(recipe)
-        return Response(serializer.data)
+        return follow(self, request, pk, Recipe, 'recipe', InCartRecipe)
 
     @shopping_cart.mapping.delete
     def remove_from_shopping_cart(self, request, pk=None):
-        in_cart_recipe = get_object_or_404(
-            InCartRecipe, recipe__id=pk, user=request.user
-        )
-        in_cart_recipe.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return unfollow(request, pk, 'recipe', InCartRecipe)
+
+    @action(detail=True, methods=['post'])
+    def favorite(self, request, pk=None):
+        return follow(self, request, pk, Recipe, 'recipe', FavoriteRecipe)
+
+    @favorite.mapping.delete
+    def unfavorite(self, request, pk=None):
+        return unfollow(request, pk, 'recipe', FavoriteRecipe)

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-05 07:38+0000\n"
+"POT-Creation-Date: 2022-10-07 12:18+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: common/mixins.py:6 recipes/models.py:81 recipes/models.py:100
+#: recipes/models.py:125 recipes/models.py:142
+msgid "created"
+msgstr "created"
+
+#: common/mixins.py:7
+msgid "modified"
+msgstr "modified"
 
 #: users/apps.py:8
 msgid "users"
@@ -34,7 +43,7 @@ msgstr "last name"
 msgid "email address"
 msgstr "email address"
 
-#: users/models.py:26 recipes/models.py:58
+#: users/models.py:26 recipes/models.py:54
 msgid "author"
 msgstr "author"
 
@@ -42,32 +51,27 @@ msgstr "author"
 msgid "subscribers"
 msgstr "subscribers"
 
-#: recipes/apps.py:8 recipes/models.py:73
+#: recipes/admin.py:58
+msgid "times marked as favorite"
+msgstr ""
+
+#: recipes/apps.py:8 recipes/models.py:70
 msgid "recipes"
 msgstr "recipes"
 
-#: recipes/mixins.py:6 recipes/models.py:84 recipes/models.py:100
-#: recipes/models.py:124 recipes/models.py:132
-msgid "created"
-msgstr "created"
-
-#: recipes/mixins.py:7
-msgid "modified"
-msgstr "modified"
-
-#: recipes/models.py:12
+#: recipes/models.py:11
 msgid "slug"
 msgstr "slug"
 
-#: recipes/models.py:13 recipes/models.py:27 recipes/models.py:46
+#: recipes/models.py:12 recipes/models.py:27 recipes/models.py:46
 msgid "name"
 msgstr "name"
 
-#: recipes/models.py:15
+#: recipes/models.py:14
 msgid "color"
 msgstr "color"
 
-#: recipes/models.py:18
+#: recipes/models.py:17
 msgid "Color in RGB #RRGGBB format"
 msgstr "Color in RGB #RRGGBB format"
 
@@ -96,22 +100,14 @@ msgid "text"
 msgstr "text"
 
 #: recipes/models.py:48
-msgid "favorited"
-msgstr "favorited"
-
-#: recipes/models.py:50
-msgid "in shopping cart"
-msgstr "in shopping cart"
-
-#: recipes/models.py:52
 msgid "image"
 msgstr "image"
 
-#: recipes/models.py:54
+#: recipes/models.py:50
 msgid "cooking time"
 msgstr "cooking time"
 
-#: recipes/models.py:72
+#: recipes/models.py:69
 msgid "recipe"
 msgstr "recipe"
 
@@ -119,14 +115,25 @@ msgstr "recipe"
 msgid "amount"
 msgstr "amount"
 
-#: recipes/models.py:116
+#: recipes/models.py:117
 #, fuzzy
 #| msgid "favorited"
 msgid "favorited_by"
 msgstr "favorited"
 
-#: recipes/models.py:122
+#: recipes/models.py:123
 #, fuzzy
 #| msgid "favorited"
 msgid "favorite"
 msgstr "favorited"
+
+#, fuzzy
+#~| msgid "favorited"
+#~ msgid "favorites"
+#~ msgstr "favorited"
+
+#~ msgid "favorited"
+#~ msgstr "favorited"
+
+#~ msgid "in shopping cart"
+#~ msgstr "in shopping cart"
