@@ -16,6 +16,7 @@ django-wkhtmltopdf==3.4.0
 djangorestframework==3.12.4
 djangorestframework-simplejwt==4.8.0
 djoser==2.1.0
+drf-extra-fields==3.4.0
 drf-yasg==1.20.0
 flake8==5.0.4
 flake8-builtins==1.5.3
