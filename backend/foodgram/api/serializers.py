@@ -1,8 +1,7 @@
-import base64
-
 from django.contrib.auth import get_user_model
-from django.core.files.base import ContentFile
 from django.db import transaction
+from django.utils.translation import gettext_lazy as _
+from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
 from recipes.models import Ingredient, IngredientRecipe, Recipe, Tag, TagRecipe
@@ -45,15 +44,12 @@ class IngredientAmountSerializer(serializers.ModelSerializer):
         model = IngredientRecipe
         fields = ('id', 'amount')
 
-
-class Base64ImageField(serializers.ImageField):
-    def to_internal_value(self, data):
-        if isinstance(data, str) and data.startswith('data:image'):
-            image_format, img_str = data.split(';base64,')
-            ext = image_format.split('/')[-1]
-            data = ContentFile(base64.b64decode(img_str), name='temp.' + ext)
-
-        return super().to_internal_value(data)
+    def validate_amount(self, value):
+        if value <= 0:
+            raise serializers.ValidationError(
+                _('Ingredient amount should be positive.')
+            )
+        return value
 
 
 class ReadOnlyRecipeSerializer(serializers.ModelSerializer):
@@ -105,55 +101,69 @@ class RecipeSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ('author',)
 
+    def validate_ingredients(self, value):
+        if not value:
+            raise serializers.ValidationError(
+                _('Recipe should have at least one ingredient.')
+            )
+
+        ingredient_ids = set()
+        for entry in value:
+            ingredient_id = entry['ingredient']['id']
+            if ingredient_id in ingredient_ids:
+                raise serializers.ValidationError(
+                    _('Duplicate ingredient with id %(ingredient_id)s')
+                    % {'ingredient_id': ingredient_id}
+                )
+            ingredient_ids.add(ingredient_id)
+        return value
+
+    def validate_cooking_time(self, value):
+        if value < 1:
+            raise serializers.ValidationError(
+                _('Recipe cooking time should be greater than zero.')
+            )
+        return value
+
+    def create_ingredient_recipe(self, ingredient_recipe, recipe):
+        amount = ingredient_recipe['amount']
+        current_ingredient = Ingredient.objects.get(
+            pk=ingredient_recipe['ingredient']['id']
+        )
+        IngredientRecipe.objects.create(
+            ingredient=current_ingredient,
+            recipe=recipe,
+            amount=amount,
+        )
+
+    @transaction.atomic
     def create(self, validated_data):
         tags = validated_data.pop('tags')
         ingredient_recipes = validated_data.pop('ingredient_recipes')
-        with transaction.atomic():
-            recipe = Recipe.objects.create(**validated_data)
-            for tag in tags:
-                current_tag = Tag.objects.get(pk=tag.id)
-                TagRecipe.objects.create(tag=current_tag, recipe=recipe)
-            for ingredient_recipe in ingredient_recipes:
-                amount = ingredient_recipe['amount']
-                current_ingredient = Ingredient.objects.get(
-                    pk=ingredient_recipe['ingredient']['id']
-                )
-                IngredientRecipe.objects.create(
-                    ingredient=current_ingredient, recipe=recipe, amount=amount
-                )
+        recipe = Recipe.objects.create(**validated_data)
+        for tag in tags:
+            current_tag = Tag.objects.get(pk=tag.id)
+            TagRecipe.objects.create(tag=current_tag, recipe=recipe)
+        for ingredient_recipe_data in ingredient_recipes:
+            self.create_ingredient_recipe(ingredient_recipe_data, recipe)
 
         return recipe
 
+    @transaction.atomic
     def update(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.name)
-        instance.text = validated_data.get('text', instance.text)
-        instance.cooking_time = validated_data.get(
-            'cooking_time', instance.cooking_time
-        )
-        instance.image = validated_data.get('image', instance.image)
-        if 'tags' in validated_data:
-            tags_data = validated_data.pop('tags')
-            lst = [tag.id for tag in tags_data]
-            instance.tags.set(lst)
-        with transaction.atomic():
-            IngredientRecipe.objects.filter(recipe=instance.id).delete()
-            if 'ingredient_recipes' in validated_data:
-                ingredient_recipes_data = validated_data.pop(
-                    'ingredient_recipes'
-                )
-                lst = []
-                for ingredient_recipe in ingredient_recipes_data:
-                    amount = ingredient_recipe['amount']
-                    current_ingredient = Ingredient.objects.get(
-                        pk=ingredient_recipe['ingredient']['id']
-                    )
-                    IngredientRecipe.objects.create(
-                        ingredient=current_ingredient,
-                        recipe=instance,
-                        amount=amount,
-                    )
-                    lst.append(ingredient_recipe['ingredient']['id'])
-                instance.ingredients.set(lst)
+        ingredient_recipes_data = None
+        if 'ingredient_recipes' in validated_data:
+            ingredient_recipes_data = validated_data.pop('ingredient_recipes')
+
+        instance = super().update(instance, validated_data)
+
+        IngredientRecipe.objects.filter(recipe=instance.id).delete()
+        if ingredient_recipes_data:
+            lst = []
+            for ingredient_recipe_data in ingredient_recipes_data:
+                self.create_ingredient_recipe(ingredient_recipe_data, instance)
+                lst.append(ingredient_recipe_data['ingredient']['id'])
+            instance.ingredients.set(lst)
 
             instance.save()
         return instance

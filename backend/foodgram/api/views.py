@@ -33,26 +33,26 @@ User = get_user_model()
 class TagReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = (IsAdminUser,)
 
 
 class IngredientReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     filter_backends = (IngredientSearchFilter,)
-    permission_classes = [IsAdminUser]
+    permission_classes = (IsAdminUser,)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
     filterset_class = RecipeFilter
     pagination_class = DynamicLimitPaginator
 
     def get_permissions(self):
         if self.action in ('update', 'partial_update', 'destroy'):
-            self.permission_classes = [OwnerOrAdmin]
+            self.permission_classes = (OwnerOrAdmin,)
         return super().get_permissions()
 
     def get_queryset(self):
