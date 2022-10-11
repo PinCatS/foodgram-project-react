@@ -7,15 +7,15 @@ class User(AbstractUser):
     """Describe custom User model."""
 
     REQUIRED_FIELDS = (
-        'email',
+        'username',
         'first_name',
         'last_name',
-        'password',
     )
+    USERNAME_FIELD = 'email'
 
     first_name = models.CharField(_('first name'), max_length=150)
     last_name = models.CharField(_('last name'), max_length=150)
-    email = models.EmailField(_('email address'), max_length=150)
+    email = models.EmailField(_('email address'), unique=True, max_length=150)
 
 
 class Subscribe(models.Model):

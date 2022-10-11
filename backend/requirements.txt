@@ -9,6 +9,7 @@ coreschema==0.0.4
 cryptography==38.0.1
 defusedxml==0.7.1
 Django==4.1.1
+django-cors-headers==3.13.0
 django-debug-toolbar==3.6.0
 django-filter==22.1
 django-templated-mail==1.1.1
@@ -22,6 +23,7 @@ flake8==5.0.4
 flake8-builtins==1.5.3
 flake8-import-order==0.18.1
 flake8-quotes==3.3.1
+gunicorn==20.1.0
 idna==3.4
 inflection==0.5.1
 isort==5.10.1
@@ -36,6 +38,7 @@ packaging==21.3
 pathspec==0.10.1
 Pillow==9.2.0
 platformdirs==2.5.2
+psycopg2-binary==2.9.4
 pycodestyle==2.9.1
 pycparser==2.21
 pydocstyle==6.1.1

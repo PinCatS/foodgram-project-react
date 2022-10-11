@@ -56,13 +56,10 @@ class Recipe(TimeStampedMixin):
         on_delete=models.CASCADE,
         related_name='recipes',
     )
-    tags = models.ManyToManyField(
-        Tag, through='TagRecipe', related_name='recipes'
-    )
+    tags = models.ManyToManyField(Tag, through='TagRecipe')
     ingredients = models.ManyToManyField(
         Ingredient,
         through='IngredientRecipe',
-        related_name='recipes',
     )
 
     class Meta:

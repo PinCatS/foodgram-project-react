@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from wkhtmltopdf.views import PDFTemplateResponse
 
 from .filters import IngredientSearchFilter, RecipeFilter
-from .permissions import OwnerOrAdmin
+from .permissions import OwnerOrAdmin, ReadOnly
 from .serializers import (
     IngredientSerializer,
     ReadOnlyIngredientAmountSerializer,
@@ -33,14 +33,14 @@ User = get_user_model()
 class TagReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = (IsAdminUser,)
+    permission_classes = (IsAdminUser | ReadOnly,)
 
 
 class IngredientReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     filter_backends = (IngredientSearchFilter,)
-    permission_classes = (IsAdminUser,)
+    permission_classes = (IsAdminUser | ReadOnly,)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):

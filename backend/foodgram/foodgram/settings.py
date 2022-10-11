@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv()
+load_dotenv(os.path.join(BASE_DIR, '..', 'infra', '.env'))
 
 SECRET_KEY = os.getenv(
     'DJANGO_SECRET_KEY',
@@ -28,22 +28,24 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'debug_toolbar',
-    'drf_yasg',
-    'django_filters',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'djoser',
-    'wkhtmltopdf',
-    'common.apps.CommonConfig',
-    'users.apps.UsersConfig',
-    'recipes.apps.RecipesConfig',
-    'api.apps.ApiConfig',
+    "debug_toolbar",
+    "drf_yasg",
+    "django_filters",
+    "rest_framework",
+    "rest_framework.authtoken",
+    "corsheaders",
+    "djoser",
+    "wkhtmltopdf",
+    "common.apps.CommonConfig",
+    "users.apps.UsersConfig",
+    "recipes.apps.RecipesConfig",
+    "api.apps.ApiConfig",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -77,9 +79,15 @@ WSGI_APPLICATION = "foodgram.wsgi.application"
 # Database
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': os.getenv(
+            'DB_ENGINE', default='django.db.backends.postgresql'
+        ),
+        'NAME': os.getenv('DB_NAME', default='postgres'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('DB_HOST', default='db'),
+        'PORT': os.getenv('DB_PORT', default=5432),
     }
 }
 
@@ -125,6 +133,18 @@ DJOSER = {
     'HIDE_USERS': False,
 }
 
+# CORS and CSRF
+
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    'DJANGO_CSRF_TRUSTED_ORIGINS', default=''
+).split()
+
+CORS_ALLOWED_ORIGINS = os.getenv(
+    'DJANGO_CORS_ALLOWED_ORIGINS', default=''
+).split()
+
+CORS_URLS_REGEX = r'^(/api/|/admin/).*$'
+
 # Internationalization
 
 LOCALE_PATHS = ['recipes/locale']
@@ -139,11 +159,11 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
+STATIC_URL = '/backend/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-STATIC_URL = "static/"
-
-MEDIA_URL = '/media/'
-
+MEDIA_ORIGIN = os.getenv('DJANGO_MEDIA_ORIGIN', default='')
+MEDIA_URL = os.path.join(MEDIA_ORIGIN, 'media/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
@@ -153,7 +173,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = 'users.User'
 
 # Path to data for importdata manage.py command
-TEST_DATA_DIR = os.path.join(BASE_DIR, '..', '..', 'data')
+TEST_DATA_DIR = os.path.join(BASE_DIR, 'static', 'data')
 
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
