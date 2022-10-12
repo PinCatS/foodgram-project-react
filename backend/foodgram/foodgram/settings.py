@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
     "djoser",
-    "wkhtmltopdf",
     "common.apps.CommonConfig",
     "users.apps.UsersConfig",
     "recipes.apps.RecipesConfig",

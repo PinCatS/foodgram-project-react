@@ -1,11 +1,13 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Exists, OuterRef, Value
+from django.http import HttpResponse
+from django.template.loader import render_to_string
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from wkhtmltopdf.views import PDFTemplateResponse
+from weasyprint import HTML
 
 from .filters import IngredientSearchFilter, RecipeFilter
 from .permissions import OwnerOrAdmin, ReadOnly
@@ -104,16 +106,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
             'ingredients': build_ingredients_summary(ingredients),
         }
 
-        return PDFTemplateResponse(
-            request=request,
-            template='shopping_cart_template.html',
-            filename='shopping_cart.pdf',
-            context=context,
-            show_content_in_browser=False,
-            cmd_options={
-                'margin-top': 16,
-            },
-        )
+        html_string = render_to_string('shopping_cart_template.html', context)
+        html = HTML(string=html_string)
+        pdf = html.write_pdf()
+
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response[
+            'Content-Disposition'
+        ] = 'inline; filename="shopping_cart.pdf"'
+        return response
 
     @action(detail=True, methods=['post'])
     def shopping_cart(self, request, pk=None):
