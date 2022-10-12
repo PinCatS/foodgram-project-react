@@ -3,10 +3,10 @@ from djoser.views import UserViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from .models import Subscribe, User
-from .serializers import CustomUserSerializer, SubscribeSerializer
 from common.paginators import DynamicLimitPaginator
 from common.utils import follow, unfollow
+from users.models import Subscribe, User
+from users.serializers import CustomUserSerializer, SubscribeSerializer
 
 
 class CustomUserViewSet(UserViewSet):
@@ -42,9 +42,9 @@ class CustomUserViewSet(UserViewSet):
     @action(
         detail=True, methods=['post'], serializer_class=SubscribeSerializer
     )
-    def subscribe(self, request, id=None):
+    def subscribe(self, request, id=None):  # noqa: A002
         return follow(self, request, id, User, 'author', Subscribe)
 
     @subscribe.mapping.delete
-    def unsubscribe(self, request, id=None):
+    def unsubscribe(self, request, id=None):  # noqa: A002
         return unfollow(request, id, 'author', Subscribe)

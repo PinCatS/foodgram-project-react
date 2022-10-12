@@ -9,9 +9,9 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from weasyprint import HTML
 
-from .filters import IngredientSearchFilter, RecipeFilter
-from .permissions import OwnerOrAdmin, ReadOnly
-from .serializers import (
+from api.filters import IngredientSearchFilter, RecipeFilter
+from api.permissions import OwnerOrAdmin, ReadOnly
+from api.serializers import (
     IngredientSerializer,
     ReadOnlyIngredientAmountSerializer,
     ReadOnlyRecipeSerializer,

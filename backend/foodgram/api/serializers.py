@@ -23,7 +23,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class ReadOnlyIngredientAmountSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(source='ingredient.id')
+    id = serializers.IntegerField(source='ingredient.id')  # noqa: A003
     name = serializers.CharField(source='ingredient.name', read_only=True)
     measurement_unit = serializers.CharField(
         source='ingredient.measurement_unit',
@@ -37,7 +37,7 @@ class ReadOnlyIngredientAmountSerializer(serializers.ModelSerializer):
 
 
 class IngredientAmountSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(source='ingredient.id')
+    id = serializers.IntegerField(source='ingredient.id')  # noqa: A003
     amount = serializers.IntegerField()
 
     class Meta:

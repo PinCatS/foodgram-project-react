@@ -72,9 +72,7 @@ class IngredientSearchFilter(filters.SearchFilter):
             reduce(operator.or_, icontains_conditions)
         )
 
-        queryset = chain(
+        return chain(
             istartswith_queryset,
             icontains_queryset.difference(istartswith_queryset),
         )
-
-        return queryset

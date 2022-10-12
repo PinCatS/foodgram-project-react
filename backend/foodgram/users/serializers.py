@@ -1,8 +1,8 @@
 from djoser.serializers import UserSerializer
 from rest_framework import serializers
 
-from .models import User
 from common.serializers import SimpleRecipeSerializer
+from users.models import User
 
 
 class CustomUserSerializer(UserSerializer):
