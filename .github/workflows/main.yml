@@ -54,12 +54,12 @@ jobs:
     - name: executing remote ssh commands to deploy
       uses: appleboy/ssh-action@master
       with:
-        context: ./foodgram-project/infra/
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.PASSPHRASE }}
         script: |
+          cd ./foodgram-project/infra/
           touch .env
           echo DB_ENGINE=${{ secrets.DB_ENGINE }} > .env
           echo DB_NAME=${{ secrets.DB_NAME }} >> .env
@@ -83,12 +83,12 @@ jobs:
         - name: executing remote ssh commands to migrate project data
           uses: appleboy/ssh-action@master
           with:
-            context: ./foodgram-project/infra/
             host: ${{ secrets.HOST }}
             username: ${{ secrets.USER }}
             key: ${{ secrets.SSH_KEY }}
             passphrase: ${{ secrets.PASSPHRASE }}
             script: |
+              cd ./foodgram-project/infra/
               sudo docker compose exec -it backend python3 manage.py collectstatic --noinput
               sudo docker compose exec -it backend python3 manage.py migrate
               sudo docker compose exec -it backend python3 manage.py importdata
