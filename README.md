@@ -4,35 +4,21 @@
 
 ## Технологии
 * Django Rest Framework
-* JWT based authorization (SimpleJWT)
-* Python
+* Django Authtoken + Djoser
+* Python 3.10.7
+* PostgreSql
 * Git
+* Docker
+* GitHub Actions
 
 ## Доступ к проекту
-TODO after approval of code by reviewer
-
-## Как запустить проект на локальном компьютере
-TODO after approval of code by reviewer
-
+* Проект доступен по адресу `http://130.193.41.249/`
+* Админка доступна по адресу `http://130.193.41.249/admin/`
+* В админку можно зайти через администратора: `admin@foodgram.ru`, пароль `change_me`
+* Документацию по backend API можно посмотреть тут: `http://130.193.41.249/api/docs/`
 ## CI/CD
-TODO after approval of code by reviewer
+Для проекта настроен GitHub Action workflow.
+При пуше в master, проект проверяется на соответствие PEP8, собирается образ `pincats/foodgram-backend: latest` backend и отправляется на DockerHub. Затем проект деплоится в Yandex.Cloud. При успешном деплое, приходит сообщение в телеграм.
 
-## Импортирование тестовых данных
-Данные в csv формате можно импортировать в БД через manage.py команду `python3 manage.py importdata`
-
-После того как команда отработала, выводится отчёт об импортированных записях:
-
-```
-============================================================
-ЗАПИСЕЙ ДОБАВЛЕНО
-
-User           :  30
-Ingredient     : 2188
-Tag            :   3
-Recipe         :   3
-TagRecipe      :   4
-IngredientRecipe:   6
-============================================================
-```
 ## Авторы
 * Сергей Ли
