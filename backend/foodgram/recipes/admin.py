@@ -3,7 +3,7 @@ from django.forms import ModelForm
 from django.forms.widgets import TextInput
 from django.utils.translation import gettext_lazy as _
 
-from .models import (
+from recipes.models import (
     FavoriteRecipe,
     Ingredient,
     IngredientRecipe,
