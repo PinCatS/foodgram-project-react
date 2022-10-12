@@ -8,9 +8,7 @@ services:
       - ./.env
 
   backend:
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
+    image: pincats/foodgram:latest
     restart: always
     volumes:
       - static_value:/app/foodgram/static/
@@ -28,8 +26,6 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ../frontend/:/app/result_build/
-    depends_on:
-      - backend
 
   nginx:
     image: nginx:1.19.3
@@ -43,6 +39,7 @@ services:
       - media_value:/usr/share/nginx/html/backend/media/
     depends_on:
       - frontend
+      - backend
 
 volumes:
   static_value:
