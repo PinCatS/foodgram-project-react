@@ -117,7 +117,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             ingredient_ids.add(ingredient_id)
 
         if errors:
-            raise serializers.ValidationError({'errors': errors})
+            raise serializers.ValidationError([{'errors': errors}])
 
         return value
 
