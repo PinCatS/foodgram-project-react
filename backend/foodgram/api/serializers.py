@@ -102,20 +102,29 @@ class RecipeSerializer(serializers.ModelSerializer):
         read_only_fields = ('author',)
 
     def validate_ingredients(self, value):
+        errors = []
         if not value:
-            raise serializers.ValidationError(
-                _('Recipe should have at least one ingredient.')
+            errors.append(
+                {'message': _('Recipe should have at least one ingredient.')}
             )
 
         ingredient_ids = set()
         for entry in value:
             ingredient_id = entry['ingredient']['id']
             if ingredient_id in ingredient_ids:
-                raise serializers.ValidationError(
-                    _('Duplicate ingredient with id %(ingredient_id)s')
-                    % {'ingredient_id': ingredient_id}
+                errors.append(
+                    {
+                        'message': _(
+                            'Duplicate ingredient with id %(ingredient_id)s'
+                        )
+                        % {'ingredient_id': ingredient_id}
+                    }
                 )
             ingredient_ids.add(ingredient_id)
+
+        if errors:
+            raise serializers.ValidationError(errors)
+
         return value
 
     def validate_cooking_time(self, value):
