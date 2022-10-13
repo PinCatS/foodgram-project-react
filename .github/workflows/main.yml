@@ -43,6 +43,8 @@ jobs:
           context: ./backend/
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/foodgram-backend:latest
+          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/foodgram-backend:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/foodgram-backend:buildcache,mode=max
 
   deploy:
     runs-on: ubuntu-latest
@@ -70,6 +72,8 @@ jobs:
           echo DJANGO_CORS_ALLOWED_ORIGINS=${{ secrets.DJANGO_CORS_ALLOWED_ORIGINS }} >> .env
           echo DJANGO_MEDIA_ORIGIN=${{ secrets.DJANGO_MEDIA_ORIGIN }} >> .env
           sudo docker compose stop
+          sudo docker container rm infra-backend-1
+          sudo docker image rm ${{ secrets.DOCKER_USERNAME }}/foodgram-backend:latest
           sudo docker compose up -d --build
 
   collect_static_and_migrate_data:

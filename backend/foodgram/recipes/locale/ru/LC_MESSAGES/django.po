@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-09 13:17+0000\n"
+"POT-Creation-Date: 2022-10-13 15:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,17 +28,17 @@ msgstr "Количество ингредиента должно быть бол
 msgid "Recipe should have at least one ingredient."
 msgstr "В рецепте должен быть указан хотя бы один ингредиент."
 
-#: api/serializers.py:115
+#: api/serializers.py:114
 #, python-format
 msgid "Duplicate ingredient with id %(ingredient_id)s"
 msgstr "Дубликат ингредиента с id %(ingredient_id)s"
 
-#: api/serializers.py:124
+#: api/serializers.py:127
 msgid "Recipe cooking time should be greater than zero."
 msgstr "Время приготовления рецепта должно быть больше 0."
 
-#: common/mixins.py:6 recipes/models.py:82 recipes/models.py:107
-#: recipes/models.py:134 recipes/models.py:160
+#: common/mixins.py:6 recipes/models.py:79 recipes/models.py:104
+#: recipes/models.py:131 recipes/models.py:157
 msgid "created"
 msgstr "создано"
 
@@ -82,7 +82,7 @@ msgstr "подписки"
 msgid "times marked as favorite"
 msgstr "кол-во раз отмечен избранным"
 
-#: recipes/apps.py:8 recipes/models.py:71
+#: recipes/apps.py:8 recipes/models.py:68
 msgid "recipes"
 msgstr "рецепты"
 
@@ -114,7 +114,7 @@ msgstr "тэги"
 msgid "measurement unit"
 msgstr "единица измерения"
 
-#: recipes/models.py:32 recipes/models.py:95
+#: recipes/models.py:32 recipes/models.py:92
 msgid "ingredient"
 msgstr "ингредиент"
 
@@ -134,61 +134,61 @@ msgstr "изображение"
 msgid "cooking time"
 msgstr "время приготовления"
 
-#: recipes/models.py:70 recipes/models.py:101 recipes/models.py:152
+#: recipes/models.py:67 recipes/models.py:98 recipes/models.py:149
 msgid "recipe"
 msgstr "рецепт"
 
-#: recipes/models.py:86
+#: recipes/models.py:83
 msgid "recipe's tag"
 msgstr "тэг рецепта"
 
-#: recipes/models.py:87
+#: recipes/models.py:84
 msgid "recipe's tags"
 msgstr "Тэги рецептов"
 
-#: recipes/models.py:104
+#: recipes/models.py:101
 msgid "amount"
 msgstr "количество"
 
-#: recipes/models.py:111
+#: recipes/models.py:108
 msgid "recipe's ingredient"
 msgstr "ингредиент для рецепта"
 
-#: recipes/models.py:112
+#: recipes/models.py:109
 msgid "recipe's ingredients"
 msgstr "ингредиенты для рецепта"
 
-#: recipes/models.py:126
+#: recipes/models.py:123
 #, fuzzy
 #| msgid "favorited"
 msgid "favorited_by"
 msgstr "избранное"
 
-#: recipes/models.py:132
+#: recipes/models.py:129
 #, fuzzy
 #| msgid "favorited"
 msgid "favorite"
 msgstr "избранное"
 
-#: recipes/models.py:138
+#: recipes/models.py:135
 msgid "favorite recipe"
 msgstr "избранный рецепт"
 
-#: recipes/models.py:139
+#: recipes/models.py:136
 msgid "favorite recipes"
 msgstr "избранные рецепты"
 
-#: recipes/models.py:158
+#: recipes/models.py:155
 #, fuzzy
 #| msgid "users"
 msgid "user"
 msgstr "пользователи"
 
-#: recipes/models.py:164
+#: recipes/models.py:161
 msgid "recipe in cart"
 msgstr "рецепт в корзине"
 
-#: recipes/models.py:165
+#: recipes/models.py:162
 msgid "recipes in cart"
 msgstr "рецепты в корзине"
 
