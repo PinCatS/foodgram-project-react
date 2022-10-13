@@ -104,26 +104,20 @@ class RecipeSerializer(serializers.ModelSerializer):
     def validate_ingredients(self, value):
         errors = []
         if not value:
-            errors.append(
-                {'message': _('Recipe should have at least one ingredient.')}
-            )
+            errors.append(_('Recipe should have at least one ingredient.'))
 
         ingredient_ids = set()
         for entry in value:
             ingredient_id = entry['ingredient']['id']
             if ingredient_id in ingredient_ids:
                 errors.append(
-                    {
-                        'message': _(
-                            'Duplicate ingredient with id %(ingredient_id)s'
-                        )
-                        % {'ingredient_id': ingredient_id}
-                    }
+                    _('Duplicate ingredient with id %(ingredient_id)s')
+                    % {'ingredient_id': ingredient_id}
                 )
             ingredient_ids.add(ingredient_id)
 
         if errors:
-            raise serializers.ValidationError(errors)
+            raise serializers.ValidationError({'errors': errors})
 
         return value
 
