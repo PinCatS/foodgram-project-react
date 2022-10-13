@@ -93,6 +93,8 @@ jobs:
               sudo docker compose exec -it backend python3 manage.py collectstatic --noinput
               sudo docker compose exec -it backend python3 manage.py migrate
               sudo docker compose exec -it backend python3 manage.py importdata
+              sudo docker compose exec -it backend python3 manage.py makemessages -l ru -l en
+              sudo docker compose exec -it backend python3 manage.py compilemessages -l ru -l en
 
   send_message:
     runs-on: ubuntu-latest
